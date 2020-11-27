@@ -7,6 +7,8 @@ import 'aos/dist/aos.css';
 import App from './App.vue';
 import router from './router';
 import '@/assets/scss/all.scss';
+import './utils/bus';
+// import Loading from './components/Loading.vue';
 
 axios.defaults.withCredentials = true; // session 存前端  >application的cookie
 
@@ -31,4 +33,5 @@ router.beforeEach((to, from, next) => {
 
 createApp(App)
   .use(router, VueAxios, axios, AOS, bootstrap)
+  // .component('Loading', Loading)
   .mount('#app');

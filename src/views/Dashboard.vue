@@ -1,6 +1,7 @@
 <template>
   <div class="container-fluid">
     <Navbar />
+    <Alert />
     <div class="row">
       <Sidebar></Sidebar>
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
@@ -12,10 +13,11 @@
 <script>
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from '@/components/Sidebar.vue';
+import Alert from '@/components/Alert.vue';
 import axios from 'axios';
 
 export default {
-  components: { Navbar, Sidebar },
+  components: { Navbar, Sidebar, Alert },
   setup() {
     const { cookie } = document;
     const myCookie = cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');

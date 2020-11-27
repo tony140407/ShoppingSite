@@ -1,4 +1,5 @@
 <template>
+  <!-- <loading v-model:active="isLoading"></loading> -->
   <div class="text-right mt-4">
     <button class="btn btn-primary" @click="openModal('modify', {}, true)">
       建立新產品
@@ -12,7 +13,7 @@
         <th width="120">原價</th>
         <th width="120">售價</th>
         <th width="100">是否啟用</th>
-        <th width="120">編輯</th>
+        <th width="180">編輯</th>
       </tr>
     </thead>
     <tbody>
@@ -30,18 +31,51 @@
           <span v-else>未啟用</span>
         </td>
         <td>
-          <button class="btn btn-outline-primary btn-sm" @click="openModal('modify', item, false)">
+          <button
+            class="btn btn-outline-primary btn-sm mr-2"
+            @click="openModal('modify', item, false)"
+          >
             編輯
           </button>
-        </td>
-        <td>
-          <button class="btn btn-outline-primary btn-sm" @click="openModal('delete', item)">
+          <button class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">
             刪除
           </button>
         </td>
       </tr>
     </tbody>
   </table>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li class="page-item" :class="{ disabled: !pagination.has_pre }">
+        <a
+          class="page-link"
+          href="#"
+          aria-label="Previous"
+          @click.prevent="getProducts(pagination.current_page - 1)"
+        >
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li
+        class="page-item "
+        v-for="page in pagination.total_pages"
+        :class="{ active: pagination.current_page == page }"
+        :key="page"
+      >
+        <a class="page-link" @click.prevent="getProducts(page)" href="#">{{ page }}</a>
+      </li>
+      <li class="page-item" :class="{ disabled: !pagination.has_next }">
+        <a
+          class="page-link"
+          href="#"
+          aria-label="Next"
+          @click.prevent="getProducts(pagination.current_page + 1)"
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
 
   <div
     class="modal fade"
@@ -235,11 +269,14 @@ import * as Bootstrap from 'bootstrap';
 
 export default {
   setup() {
+    const isLoading = false;
     const products = ref([]);
-    function getProducts() {
-      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/products`;
+    const pagination = ref({});
+    function getProducts(page = 1) {
+      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/products?page=${page}`;
       axios.get(api).then((response) => {
         products.value = response.data.products;
+        pagination.value = response.data.pagination;
         console.log(products);
       });
     }
@@ -289,7 +326,8 @@ export default {
           return;
         }
         getProducts();
-        console.log('新增失敗');
+        // eslint-disable-next-line
+        alert('新增失敗');
       });
     }
     function deleteProduct() {
@@ -305,9 +343,11 @@ export default {
         }
         getProducts();
         deleteModal.hide();
-        console.log('刪除失敗');
+        // eslint-disable-next-line
+        alert('刪除失敗');
       });
     }
+
     const filesRef = ref();
     function uploadFile() {
       const uploadedFile = filesRef.value.files[0];
@@ -328,7 +368,9 @@ export default {
         });
     }
     return {
+      isLoading,
       products,
+      pagination,
       getProducts,
       modifyProductRef,
       deleteProductRef,

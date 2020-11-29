@@ -13,23 +13,23 @@
 @import '~bootstrap/scss/bootstrap';
 </style>
 <script>
-import AOS from 'aos';
-import axios from 'axios';
-import { onBeforeMount, onMounted } from 'vue';
+// import AOS from 'aos';
+// import axios from 'axios';
+// import { onBeforeMount, onMounted } from 'vue';
 
 export default {
   setup: () => {
-    const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/products`;
-    axios.get(api).then((response) => {
-      console.log(response.data);
-    });
-
-    onBeforeMount(() => {
-      AOS.init();
-    });
-    onMounted(() => {
-      console.log('api: ', process.env.VUE_APP_API_PATH);
-    });
+    // const api = `${process.env.VUE_APP_API_PATH}/api/\
+    // ${process.env.VUE_APP_CUSTOM_PATH}/products`;
+    // axios.get(api).then((response) => {
+    //   console.log(response.data);
+    // });
+    // onBeforeMount(() => {
+    //   AOS.init();
+    // });
+    // onMounted(() => {
+    //   console.log('api: ', process.env.VUE_APP_API_PATH);
+    // });
   },
 };
 </script>

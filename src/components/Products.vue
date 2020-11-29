@@ -44,7 +44,7 @@
       </tr>
     </tbody>
   </table>
-  <nav aria-label="Page navigation example">
+  <!-- <nav aria-label="Page navigation example">
     <ul class="pagination">
       <li class="page-item" :class="{ disabled: !pagination.has_pre }">
         <a
@@ -75,8 +75,8 @@
         </a>
       </li>
     </ul>
-  </nav>
-
+  </nav> -->
+  <Pagination :pagination="pagination" @get-products="getProducts" />
   <div
     class="modal fade"
     ref="modifyProductRef"
@@ -265,9 +265,11 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import * as Bootstrap from 'bootstrap';
-// import { Modal } from 'bootstrap';
+
+import Pagination from '@/components/Pagination.vue';
 
 export default {
+  components: { Pagination },
   setup() {
     const isLoading = false;
     const products = ref([]);
@@ -277,7 +279,6 @@ export default {
       axios.get(api).then((response) => {
         products.value = response.data.products;
         pagination.value = response.data.pagination;
-        console.log(products);
       });
     }
     getProducts();
@@ -302,7 +303,6 @@ export default {
         } else {
           tempProduct.value = { ...item }; // item 深層拷貝 Object.assign({},item)
           isNew.value = false;
-          console.log('item', item);
         }
         modifyModal.show();
       } else {
@@ -319,7 +319,6 @@ export default {
         httpMethod = 'put';
       }
       axios[httpMethod](api, { data: tempProduct.value }).then((response) => {
-        console.log(response.data);
         if (response.data.success) {
           getProducts();
           modifyModal.hide();
@@ -361,7 +360,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data);
           if (response.data.success) {
             tempProduct.value.imageUrl = response.data.imageUrl;
           }

@@ -1,10 +1,10 @@
 <template>
   <!-- <loading v-model:active="isLoading"></loading> -->
-  <div class="text-right mt-4">
+  <!-- <div class="text-right mt-4">
     <button class="btn btn-primary" @click="openModal('modify', {}, true)">
       建立新產品
     </button>
-  </div>
+  </div> -->
   <table class="table mt-4">
     <thead>
       <tr>
@@ -13,11 +13,10 @@
         <th width="120">原價</th>
         <th width="120">售價</th>
         <th width="100">是否啟用</th>
-        <th width="180">編輯</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="item in products" :key="item.id">
+      <!-- <tr v-for="item in products" :key="item.id">
         <td>{{ item.category }}</td>
         <td>{{ item.title }}</td>
         <td class="text-right">
@@ -30,18 +29,7 @@
           <span v-if="item.is_enabled" class="text-success"></span>
           <span v-else>未啟用</span>
         </td>
-        <td>
-          <button
-            class="btn btn-outline-primary btn-sm mr-2"
-            @click="openModal('modify', item, false)"
-          >
-            編輯
-          </button>
-          <button class="btn btn-outline-danger btn-sm" @click="openModal('delete', item)">
-            刪除
-          </button>
-        </td>
-      </tr>
+      </tr> -->
     </tbody>
   </table>
   <!-- <nav aria-label="Page navigation example">
@@ -77,7 +65,7 @@
     </ul>
   </nav> -->
   <Pagination :pagination="pagination" @get-products="getProducts" />
-  <div
+  <!-- <div
     class="modal fade"
     ref="modifyProductRef"
     tabindex="-1"
@@ -190,6 +178,7 @@
               <div class="form-group">
                 <label for="description">產品描述</label>
                 <textarea
+                  type="text"
                   class="form-control"
                   id="description"
                   placeholder="請輸入產品描述"
@@ -258,12 +247,12 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 <script>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
-import * as Bootstrap from 'bootstrap';
+// import * as Bootstrap from 'bootstrap';
 
 import Pagination from '@/components/Pagination.vue';
 
@@ -271,112 +260,36 @@ export default {
   components: { Pagination },
   setup() {
     const isLoading = false;
-    const products = ref([]);
+    const order = ref();
+    // {
+    //   create_at: '',
+    //   id: '',
+    //   is_paid: '',
+    //   message: '',
+    //   paid_date: '',
+    //   payment_method: '',
+    //   products: {
+
+    // }
+
     const pagination = ref({});
     function getProducts(page = 1) {
-      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/products?page=${page}`;
+      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/admin/orders?page=${page}`;
       axios.get(api).then((response) => {
-        products.value = response.data.products;
+        order.value = response.data.orders;
+
         pagination.value = response.data.pagination;
+        console.log(response.data);
       });
+      console.log(api);
     }
     getProducts();
 
-    const modifyProductRef = ref(); // modifyProduct 必須跟元素上的 ref 同名
-    const deleteProductRef = ref();
-    let modifyModal = null; // onMounted 後元素才掛載
-    let deleteModal = null; // onMounted 後元素才掛載
-    onMounted(() => {
-      modifyModal = new Bootstrap.Modal(modifyProductRef.value, {});
-      deleteModal = new Bootstrap.Modal(deleteProductRef.value, {});
-    });
-
-    const isNew = ref('');
-    const tempProduct = ref({});
-
-    function openModal(mode, item, productIsNew) {
-      if (mode === 'modify') {
-        if (productIsNew) {
-          tempProduct.value = {};
-          isNew.value = true;
-        } else {
-          tempProduct.value = { ...item }; // item 深層拷貝 Object.assign({},item)
-          isNew.value = false;
-        }
-        modifyModal.show();
-      } else {
-        tempProduct.value = item; // item 淺層拷貝即可，因為不會修改到
-        deleteModal.show();
-      }
-    }
-
-    function updateProduct() {
-      let api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/admin/product`;
-      let httpMethod = 'post';
-      if (!isNew.value) {
-        api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/admin/product/${tempProduct.value.id}`;
-        httpMethod = 'put';
-      }
-      axios[httpMethod](api, { data: tempProduct.value }).then((response) => {
-        if (response.data.success) {
-          getProducts();
-          modifyModal.hide();
-          return;
-        }
-        getProducts();
-        // eslint-disable-next-line
-        alert('新增失敗');
-      });
-    }
-    function deleteProduct() {
-      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/admin/product/${tempProduct.value.id}`;
-      const httpMethod = 'delete';
-
-      axios[httpMethod](api).then((response) => {
-        console.log(response.data);
-        if (response.data.success) {
-          getProducts();
-          deleteModal.hide();
-          return;
-        }
-        getProducts();
-        deleteModal.hide();
-        // eslint-disable-next-line
-        alert('刪除失敗');
-      });
-    }
-
-    const filesRef = ref();
-    function uploadFile() {
-      const uploadedFile = filesRef.value.files[0];
-      const formData = new FormData();
-      formData.append('file-to-upload', uploadedFile);
-      const url = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/admin/upload`;
-      axios
-        .post(url, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          if (response.data.success) {
-            tempProduct.value.imageUrl = response.data.imageUrl;
-          }
-        });
-    }
     return {
       isLoading,
-      products,
+      order,
       pagination,
       getProducts,
-      modifyProductRef,
-      deleteProductRef,
-      filesRef,
-      openModal,
-      tempProduct,
-      updateProduct,
-      deleteProduct,
-      uploadFile,
     };
   },
 };

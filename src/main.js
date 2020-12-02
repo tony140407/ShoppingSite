@@ -31,7 +31,8 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-createApp(App)
-  .use(router, VueAxios, axios, AOS, bootstrap)
-  // .component('Loading', Loading)
-  .mount('#app');
+const app = createApp(App);
+
+app.use(router, VueAxios, axios, AOS, bootstrap);
+// app.component('Loading', Loading);
+app.mount('#app');

@@ -1,10 +1,12 @@
 <template>
-  <div id="nav" class="container">
+  <!-- <div id="nav" class="container">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
     <router-link to="/login">LogIn</router-link>
     <router-link to="/admin/products">products</router-link>
-  </div>
+  </div> -->
+  <!-- <Navbar /> -->
+
   <!-- <router-view data-aos="flip-up" data-aos-duration="1000" /> -->
   <router-view />
 </template>
@@ -16,20 +18,12 @@
 // import AOS from 'aos';
 // import axios from 'axios';
 // import { onBeforeMount, onMounted } from 'vue';
+// import Navbar from '@/components/Navbar.vue';
 
 export default {
-  setup: () => {
-    // const api = `${process.env.VUE_APP_API_PATH}/api/\
-    // ${process.env.VUE_APP_CUSTOM_PATH}/products`;
-    // axios.get(api).then((response) => {
-    //   console.log(response.data);
-    // });
-    // onBeforeMount(() => {
-    //   AOS.init();
-    // });
-    // onMounted(() => {
-    //   console.log('api: ', process.env.VUE_APP_API_PATH);
-    // });
+  components: {
+    // Navbar,
   },
+  setup: () => {},
 };
 </script>

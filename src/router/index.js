@@ -1,19 +1,39 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Products from '@/components/Products.vue';
-import Home from '../views/Home.vue';
+import Orders from '@/components/Orders.vue';
+// import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
+import CustomerOrders from '../views/CustomerOrders.vue';
 
 const routes = [
   {
     path: '/:pathMatch(.*)',
     redirect: '/login',
   },
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  //   meta: { requiresAuth: true },
+  // },
+
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-    meta: { requiresAuth: true },
+    name: 'CustomerDashboard',
+    component: Dashboard,
+    children: [
+      {
+        path: 'customer_orders',
+        name: 'CustomerOrders',
+        component: CustomerOrders,
+      },
+      {
+        path: 'products',
+        name: 'Products',
+        component: Products,
+      },
+    ],
   },
   {
     path: '/login', // 路徑盡可能小寫
@@ -31,12 +51,13 @@ const routes = [
         component: Products,
         meta: { requiresAuth: true },
       },
+      {
+        path: 'orders',
+        name: 'Orders',
+        component: Orders,
+        meta: { requiresAuth: true },
+      },
     ],
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue'),
   },
 ];
 

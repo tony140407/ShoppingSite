@@ -4,10 +4,15 @@ import VueAxios from 'vue-axios';
 import bootstrap from 'bootstrap';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import App from './App.vue';
-import router from './router';
 import '@/assets/scss/all.scss';
 import './utils/bus';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import router from './router';
+import App from './App.vue';
+
+library.add(faUserSecret);
 // import Loading from './components/Loading.vue';
 
 axios.defaults.withCredentials = true; // session 存前端  >application的cookie
@@ -44,4 +49,5 @@ app.config.globalProperties.$filters = {
     })}`;
   },
 };
+app.component('font-awesome-icon', FontAwesomeIcon);
 app.mount('#app');

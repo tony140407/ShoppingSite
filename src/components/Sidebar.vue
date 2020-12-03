@@ -31,6 +31,7 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/customer_orders">
             <span data-feather="file-text"></span>
+            <font-awesome-icon icon="user-secret" />
             模擬訂單
           </router-link>
         </li>

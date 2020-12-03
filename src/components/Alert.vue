@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import bus from '../utils/bus';
+
 export default {
   name: 'Navbar',
   data() {
@@ -47,7 +49,7 @@ export default {
     },
   },
   created() {
-    // const vm = this;
+    const vm = this;
     // 自定義名稱 'messsage:push'
     // message: 傳入參數
     // status: 樣式，預設值為 warning
@@ -55,6 +57,10 @@ export default {
     //   vm.updateMessage(message, status);
     // });
     // vm.$bus.$emit('message:push');
+    bus.on('message:push', (message, status = 'warning') => {
+      console.log(message, status);
+      vm.updateMessage(message, status);
+    });
   },
 };
 </script>

@@ -21,10 +21,10 @@
         <td>{{ item.category }}</td>
         <td>{{ item.title }}</td>
         <td class="text-right">
-          {{ item.origin_price }}
+          {{ $filters.currency(item.origin_price) }}
         </td>
         <td class="text-right">
-          {{ item.price }}
+          {{ $filters.currency(item.price) }}
         </td>
         <td>
           <span v-if="item.is_enabled" class="text-success"></span>
@@ -44,38 +44,6 @@
       </tr>
     </tbody>
   </table>
-  <!-- <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item" :class="{ disabled: !pagination.has_pre }">
-        <a
-          class="page-link"
-          href="#"
-          aria-label="Previous"
-          @click.prevent="getProducts(pagination.current_page - 1)"
-        >
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      <li
-        class="page-item "
-        v-for="page in pagination.total_pages"
-        :class="{ active: pagination.current_page == page }"
-        :key="page"
-      >
-        <a class="page-link" @click.prevent="getProducts(page)" href="#">{{ page }}</a>
-      </li>
-      <li class="page-item" :class="{ disabled: !pagination.has_next }">
-        <a
-          class="page-link"
-          href="#"
-          aria-label="Next"
-          @click.prevent="getProducts(pagination.current_page + 1)"
-        >
-          <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-    </ul>
-  </nav> -->
   <Pagination :pagination="pagination" @get-products="getProducts" />
   <div
     class="modal fade"
@@ -266,6 +234,7 @@ import axios from 'axios';
 import * as Bootstrap from 'bootstrap';
 
 import Pagination from '@/components/Pagination.vue';
+import bus from '../utils/bus';
 
 export default {
   components: { Pagination },
@@ -361,9 +330,13 @@ export default {
         .then((response) => {
           if (response.data.success) {
             tempProduct.value.imageUrl = response.data.imageUrl;
+          } else {
+            bus.emit('message:push', response.data.message, 'danger');
           }
         });
     }
+    bus.emit('message:push', 'bus color 待解決', 'success');
+    bus.emit('message:push', '模擬訂單?????', 'success');
     return {
       isLoading,
       products,

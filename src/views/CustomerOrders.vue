@@ -14,9 +14,11 @@
           <p class="card-text">{{ item.content }}</p>
           <div class="d-flex justify-content-between align-items-baseline">
             <!-- <div class="h5">2,800 元</div> -->
-            <div class="h5" v-if="!item.price">{{ item.price }} 元</div>
-            <del class="h6" v-if="item.price">原價 {{ item.origin_price }} 元</del>
-            <div class="h5" v-if="item.price">現在只要 {{ item.price }} 元</div>
+            <div class="h5" v-if="!item.price">{{ $filters.currency(item.price) }} 元</div>
+            <del class="h6" v-if="item.price"
+              >原價 {{ $filters.currency(item.origin_price) }} 元</del
+            >
+            <div class="h5" v-if="item.price">現在只要 {{ $filters.currency(item.price) }} 元</div>
           </div>
         </div>
         <div class="card-footer d-flex">

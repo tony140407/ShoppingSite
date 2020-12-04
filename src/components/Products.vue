@@ -79,7 +79,7 @@
               <div class="form-group">
                 <label for="customFile"
                   >或 上傳圖片
-                  <i class="fas fa-spinner fa-spin"></i>
+                  <font-awesome-icon icon="spinner" spin v-if="status.fileUploading" />
                 </label>
                 <input
                   type="file"
@@ -229,7 +229,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import axios from 'axios';
 import * as Bootstrap from 'bootstrap';
 
@@ -240,6 +240,9 @@ export default {
   components: { Pagination },
   setup() {
     const isLoading = false;
+    const status = reactive({
+      fileUploading: false,
+    });
     const products = ref([]);
     const pagination = ref({});
     function getProducts(page = 1) {
@@ -317,6 +320,7 @@ export default {
 
     const filesRef = ref();
     function uploadFile() {
+      status.fileUploading = true;
       const uploadedFile = filesRef.value.files[0];
       const formData = new FormData();
       formData.append('file-to-upload', uploadedFile);
@@ -333,12 +337,16 @@ export default {
           } else {
             bus.emit('message:push', response.data.message, 'danger');
           }
+
+          status.fileUploading = false;
         });
     }
     bus.emit('message:push', 'bus color 待解決', 'success');
     bus.emit('message:push', '模擬訂單?????', 'success');
+    bus.emit('message:push', 'Loading 還沒解決!!', 'success');
     return {
       isLoading,
+      status,
       products,
       pagination,
       getProducts,

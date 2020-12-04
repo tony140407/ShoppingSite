@@ -7,13 +7,15 @@ import 'aos/dist/aos.css';
 import '@/assets/scss/all.scss';
 import './utils/bus';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons';
+import { faUserSecret, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+// TODO: vue-loading-overlay support vue3?
+// import Loading from 'vue-loading-overlay';
+// import 'vue-loading-overlay/dist/vue-loading.css';
 import router from './router';
 import App from './App.vue';
 
-library.add(faUserSecret);
-// import Loading from './components/Loading.vue';
+library.add(faUserSecret, faSpinner);
 
 axios.defaults.withCredentials = true; // session 存前端  >application的cookie
 
@@ -39,7 +41,6 @@ router.beforeEach((to, from, next) => {
 const app = createApp(App);
 
 app.use(router, VueAxios, axios, AOS, bootstrap);
-// app.component('Loading', Loading);
 app.config.globalProperties.$filters = {
   currency(num) {
     const n = Number(num);
@@ -49,5 +50,6 @@ app.config.globalProperties.$filters = {
     })}`;
   },
 };
+// app.component('Loading', Loading);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.mount('#app');

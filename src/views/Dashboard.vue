@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid">
+    <!-- <loading active.sync="true"></loading> -->
     <Navbar />
     <Alert />
     <div class="row">
@@ -17,11 +18,14 @@ import Alert from '@/components/Alert.vue';
 import axios from 'axios';
 
 export default {
-  components: { Navbar, Sidebar, Alert },
+  components: {
+    Navbar,
+    Sidebar,
+    Alert,
+  },
   setup() {
     const { cookie } = document;
     const myCookie = cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
-    // console.log(myCookie);
     axios.defaults.headers.common.Authorization = myCookie;
   },
 };

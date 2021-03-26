@@ -41,6 +41,7 @@ router.beforeEach((to, from, next) => {
 const app = createApp(App);
 
 app.use(router, VueAxios, axios, AOS, bootstrap);
+
 app.config.globalProperties.$filters = {
   currency(num) {
     const n = Number(num);
@@ -50,6 +51,7 @@ app.config.globalProperties.$filters = {
     })}`;
   },
 };
+
 // app.component('Loading', Loading);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.mount('#app');

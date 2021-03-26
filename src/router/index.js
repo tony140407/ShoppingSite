@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Products from '@/components/Products.vue';
 import Orders from '@/components/Orders.vue';
-// import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import CustomerOrders from '../views/CustomerOrders.vue';
@@ -11,13 +10,6 @@ const routes = [
     path: '/:pathMatch(.*)',
     redirect: '/login',
   },
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home,
-  //   meta: { requiresAuth: true },
-  // },
-
   {
     path: '/',
     name: 'CustomerDashboard',

@@ -13,7 +13,6 @@
           </h5>
           <p class="card-text">{{ item.content }}</p>
           <div class="d-flex justify-content-between align-items-baseline">
-            <!-- <div class="h5">2,800 元</div> -->
             <div class="h5" v-if="!item.price">{{ $filters.currency(item.price) }} 元</div>
             <del class="h6" v-if="item.price"
               >原價 {{ $filters.currency(item.origin_price) }} 元</del
@@ -40,7 +39,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal-dialog modal-lg" role="document">
+  <!-- <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content border-0">
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title" id="exampleModalLabel">
@@ -183,31 +182,30 @@
         <button type="button" class="btn btn-primary" @click="updateProduct">確認</button>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import * as Bootstrap from 'bootstrap';
-
-// import Pagination from '@/components/Pagination.vue';
+import { getProducts } from '../composition/Products';
 
 export default {
-  // components: { Pagination },
   setup() {
     const isLoading = false;
     const products = ref([]);
     const product = ref({});
     const pagination = ref({});
-    function getProducts(page = 1) {
-      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/products?page=${page}`;
-      axios.get(api).then((response) => {
-        products.value = response.data.products;
-        pagination.value = response.data.pagination;
-      });
+
+    function productsStatusUpdate(fn) {
+      return function setPage(page = 1) {
+        const { productsResult, paginationResult } = fn(page);
+        products.value = productsResult;
+        pagination.value = paginationResult;
+      };
     }
-    getProducts();
+    productsStatusUpdate(getProducts)();
 
     const modifyProductRef = ref(); // modifyProduct 必須跟元素上的 ref 同名
     const deleteProductRef = ref();
@@ -215,7 +213,7 @@ export default {
     let deleteModal = null; // onMounted 後元素才掛載
     onMounted(() => {
       toSeeMoreModal = new Bootstrap.Modal(modifyProductRef.value, {});
-      deleteModal = 2; // new Bootstrap.Modal(deleteProductRef.value, {});
+      deleteModal = new Bootstrap.Modal(deleteProductRef.value, {});
     });
 
     function getProduct(id) {

@@ -44,7 +44,7 @@
       </tr>
     </tbody>
   </table>
-  <Pagination :pagination="pagination" @get-products="getProducts" />
+  <Pagination :pagination="pagination" @get-products="getPageProducts" />
   <div
     class="modal fade"
     ref="modifyProductRef"
@@ -235,6 +235,8 @@ import * as Bootstrap from 'bootstrap';
 
 import Pagination from '@/components/Pagination.vue';
 import bus from '../utils/bus';
+import { getProducts } from '../composition/Products';
+// import { createModal } from '../composition/BootstrapModal';
 
 export default {
   components: { Pagination },
@@ -243,28 +245,34 @@ export default {
     const status = reactive({
       fileUploading: false,
     });
+
+    // products 頁面更新
     const products = ref([]);
     const pagination = ref({});
-    function getProducts(page = 1) {
-      const api = `${process.env.VUE_APP_API_PATH}/api/${process.env.VUE_APP_CUSTOM_PATH}/products?page=${page}`;
-      axios.get(api).then((response) => {
-        products.value = response.data.products;
-        pagination.value = response.data.pagination;
-      });
-    }
-    getProducts();
 
+    const productsStatusUpdate = (fn) => (page) => {
+      fn(page).then((res) => {
+        const { productsResult, paginationResult } = res;
+        products.value = productsResult;
+        pagination.value = paginationResult;
+      });
+    };
+    const getPageProducts = productsStatusUpdate(getProducts);
+
+    getPageProducts(1);
+
+    // Bootstrap.Modal 掛載
     const modifyProductRef = ref(); // modifyProduct 必須跟元素上的 ref 同名
     const deleteProductRef = ref();
     let modifyModal = null; // onMounted 後元素才掛載
     let deleteModal = null; // onMounted 後元素才掛載
+    // ({ modifyModal, deleteModal } = createModal(modifyProductRef, deleteProductRef));
     onMounted(() => {
       modifyModal = new Bootstrap.Modal(modifyProductRef.value, {});
       deleteModal = new Bootstrap.Modal(deleteProductRef.value, {});
     });
-
-    const isNew = ref('');
-    const tempProduct = ref({});
+    const isNew = ref(''); // 是否現存資料
+    const tempProduct = ref({}); // 放空物件或 product 個別資料
 
     function openModal(mode, item, productIsNew) {
       if (mode === 'modify') {
@@ -291,11 +299,11 @@ export default {
       }
       axios[httpMethod](api, { data: tempProduct.value }).then((response) => {
         if (response.data.success) {
-          getProducts();
+          getPageProducts(1);
           modifyModal.hide();
           return;
         }
-        getProducts();
+        getPageProducts(1);
         // eslint-disable-next-line
         alert('新增失敗');
       });
@@ -307,11 +315,11 @@ export default {
       axios[httpMethod](api).then((response) => {
         console.log(response.data);
         if (response.data.success) {
-          getProducts();
+          productsStatusUpdate(getProducts)();
           deleteModal.hide();
           return;
         }
-        getProducts();
+        productsStatusUpdate(getProducts)();
         deleteModal.hide();
         // eslint-disable-next-line
         alert('刪除失敗');
@@ -349,7 +357,7 @@ export default {
       status,
       products,
       pagination,
-      getProducts,
+      getPageProducts,
       modifyProductRef,
       deleteProductRef,
       filesRef,
